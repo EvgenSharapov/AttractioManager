@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="${attraction.id} ? 'Edit Attraction' : 'Add Attraction'"></title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container my-4">
+  <h1 class="text-center" th:text="${attraction.id} ? 'Edit Attraction' : 'Add Attraction'"></h1>
+  <form th:action="@{${attraction.id} ? '/attractions/edit/{id}(id=${attraction.id})' : '/attractions/add'}" th:object="${attraction}" method="post">
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input type="text" class="form-control" id="name" th:field="*{name}" required>
+    </div>
+    <div class="form-group">
+      <label for="description">Description</label>
+      <textarea class="form-control" id="description" th:field="*{description}" required></textarea>
+    </div>
+    <div class="form-group">
+      <label for="attractionType">Type</label>
+      <select class="form-control" id="attractionType" th:field="*{attractionType}" required>
+        <option th:each="type : ${T(com.example.model.AttractionType).values()}" th:value="${type}" th:text="${type}"></option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="address">Address</label>
+      <select class="form-control" id="address" th:field="*{address}" required>
+        <option th:each="address : ${addresses}" th:value="${address.id}" th:text="${address.city + ', ' + address.street + ', ' + address.building}"></option>
+      </select>
+    </div>
+    <button type="submit" class="btn btn-success">Save</button>
+  </form>
+</div>
+</body>
+</html>
