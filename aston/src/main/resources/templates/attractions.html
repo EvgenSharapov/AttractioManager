@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Attractions</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+</head>
+<body>
+<div class="container my-4">
+  <h1 class="text-center">Attractions</h1>
+  <a th:href="@{/attractions/add}" class="btn btn-primary mb-3">Add Attraction</a>
+  <table class="table table-striped">
+    <thead class="thead-dark">
+    <tr>
+      <th>Name</th>
+      <th>Description</th>
+      <th>Type</th>
+      <th>City</th>
+      <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="attraction : ${attractions}">
+      <td th:text="${attraction.name}"></td>
+      <td th:text="${attraction.description}"></td>
+      <td th:text="${attraction.attractionType}"></td>
+      <td th:text="${attraction.address.city}"></td>
+      <td>
+        <a th:href="@{/attractions/edit/{id}(id=${attraction.id})}" class="btn btn-warning btn-sm">Edit</a>
+        <a th:href="@{/attractions/delete/{id}(id=${attraction.id})}" class="btn btn-danger btn-sm">Delete</a>
+      </td>
+    </tr>
+    </tbody>
+  </table>
+</div>
+</body>
+</html>

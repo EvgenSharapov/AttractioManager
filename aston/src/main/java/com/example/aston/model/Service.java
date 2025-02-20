@@ -11,13 +11,53 @@ import java.util.UUID;
 public class Service {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private UUID id;
+    private Long id;
     private String name;
     private String description;
 
-    @Enumerated(EnumType.STRING)
-    private ServiceType serviceType;
+//    @Enumerated(EnumType.STRING)
+//    private ServiceType serviceType;
 
     @ManyToMany(mappedBy = "services")
     private Set<Attraction> attractions;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+//    public ServiceType getServiceType() {
+//        return serviceType;
+//    }
+
+//    public void setServiceType(ServiceType serviceType) {
+//        this.serviceType = serviceType;
+//    }
+
+    public Set<Attraction> getAttractions() {
+        return attractions;
+    }
+
+    public void setAttractions(Set<Attraction> attractions) {
+        this.attractions = attractions;
+    }
 }

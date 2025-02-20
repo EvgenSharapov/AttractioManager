@@ -10,7 +10,7 @@ import java.util.UUID;
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private UUID id;
+    private Long id;
     private Integer building;
     private String street;
     private String city;
@@ -20,4 +20,68 @@ public class Address {
 
     @OneToMany(mappedBy = "address")
     private List<Attraction> attractions;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public Integer getBuilding() {
+        return building;
+    }
+
+    public void setBuilding(Integer building) {
+        this.building = building;
+    }
+
+    public String getStreet() {
+        return street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public void setRegion(String region) {
+        this.region = region;
+    }
+
+    public Double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
+    }
+
+    public Double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
+    }
+
+    public List<Attraction> getAttractions() {
+        return attractions;
+    }
+
+    public void setAttractions(List<Attraction> attractions) {
+        this.attractions = attractions;
+    }
 }
