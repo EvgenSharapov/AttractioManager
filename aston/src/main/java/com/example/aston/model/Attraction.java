@@ -22,10 +22,6 @@ public class Attraction {
     private String name;
     private String description;
 
-//    @OneToOne(mappedBy = "address_id")
-//    @Column(name = "attraction_id")
-//    private UUID addressId;
-
     @Enumerated(EnumType.STRING)
     private AttractionType attractionType;
 

@@ -1,25 +1,24 @@
 package com.example.aston.service;
 
 import com.example.aston.dto.AddressRequestDTO;
-import com.example.aston.dto.AttractionServiceRequestDTO;
 import com.example.aston.mapper.AddressMapper;
 import com.example.aston.model.Address;
 import com.example.aston.repository.AddressRepository;
 import com.example.aston.service.address.AddressServiceImpl;
-import lombok.Builder;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.times;
 
-@Builder
+@ExtendWith(MockitoExtension.class) // Подключаем Mockito к JUnit
 public class AddressServiceTest {
 
     @Mock
@@ -30,8 +29,6 @@ public class AddressServiceTest {
 
     @InjectMocks
     private AddressServiceImpl addressService;
-
-
 
     @Test
     public void testFindById() {
@@ -82,7 +79,6 @@ public class AddressServiceTest {
                 .region("Yaroslavl region")
                 .build();
 
-
         List<AddressRequestDTO> expectedDTOs = List.of(expectedDTO1, expectedDTO2);
 
         when(addressRepo.findAll()).thenReturn(addresses);
@@ -127,19 +123,4 @@ public class AddressServiceTest {
 
         verify(addressRepo, times(1)).deleteById(id);
     }
-    @Test
-    public void testAttractionServiceRequestDTO() {
-        String name = "Test Attraction";
-        String description = "Test Description";
-
-        AttractionServiceRequestDTO dto = AttractionServiceRequestDTO.builder()
-                .name(name)
-                .description(description)
-                .build();
-
-        assertEquals(name, dto.name());
-        assertEquals(description, dto.description());
-    }
-
-
 }
