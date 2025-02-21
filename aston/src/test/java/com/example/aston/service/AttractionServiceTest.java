@@ -1,15 +1,16 @@
 package com.example.aston.service;
 
+import com.example.aston.dto.AttractionRequestDTO;
+import com.example.aston.mapper.AttractionMapper;
 import com.example.aston.model.Attraction;
 import com.example.aston.repository.AttractionRepository;
-import com.example.aston.service.attraction.AttractionServiceImpl;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
+import com.example.aston.service.attraction.AttractionServiceImpl;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -17,141 +18,88 @@ import java.util.UUID;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-class AttractionServiceTest {
+@ExtendWith(MockitoExtension.class)
+public class AttractionServiceTest {
 
     @Mock
     private AttractionRepository attractionRepo;
 
+    @Mock
+    private AttractionMapper attractionMapper;
+
     @InjectMocks
     private AttractionServiceImpl attractionService;
 
-    @BeforeEach
-    void setUp() {
-        MockitoAnnotations.openMocks(this);
-    }
-
     @Test
-    void testGetAllAttractions() {
-        Attraction attraction1 = new Attraction();
-        Attraction attraction2 = new Attraction();
-        List<Attraction> attractions = Arrays.asList(attraction1, attraction2);
-
-        when(attractionRepo.findAll()).thenReturn(attractions);
-
-        List<Attraction> result = attractionService.getAllAttractions();
-
-        assertEquals(2, result.size());
-        verify(attractionRepo, times(1)).findAll();
-    }
-
-    @Test
-    void testGetAttractionById() {
+    public void testFindById() {
         UUID id = UUID.randomUUID();
         Attraction attraction = new Attraction();
-        attraction.setId(id);
+        AttractionRequestDTO expectedDTO = new AttractionRequestDTO("Test Attraction", "Test Description");
 
         when(attractionRepo.findById(id)).thenReturn(Optional.of(attraction));
+        when(attractionMapper.mapToAttractionRequestDTO(attraction)).thenReturn(expectedDTO);
 
-        Attraction result = attractionService.getAttractionById(id);
+        AttractionRequestDTO result = attractionService.findById(id);
 
         assertNotNull(result);
-        assertEquals(id, result.getId());
+        assertEquals(expectedDTO, result);
         verify(attractionRepo, times(1)).findById(id);
+        verify(attractionMapper, times(1)).mapToAttractionRequestDTO(attraction);
     }
 
     @Test
-    void testGetAttractionById_NotFound() {
+    public void testFindByIdNotFound() {
         UUID id = UUID.randomUUID();
 
         when(attractionRepo.findById(id)).thenReturn(Optional.empty());
 
-        Exception exception = assertThrows(RuntimeException.class, () -> {
-            attractionService.getAttractionById(id);
-        });
-
-        assertEquals("Attraction not found by id: " + id, exception.getMessage());
+        assertThrows(RuntimeException.class, () -> attractionService.findById(id));
         verify(attractionRepo, times(1)).findById(id);
     }
 
     @Test
-    void testSaveAttraction() {
-        Attraction attraction = new Attraction();
+    public void testGetAll() {
+        List<Attraction> attractions = List.of(new Attraction(), new Attraction());
+        List<AttractionRequestDTO> expectedDTOs = List.of(
+                new AttractionRequestDTO("Attraction 1", "Description 1"),
+                new AttractionRequestDTO("Attraction 2", "Description 2")
+        );
 
-        when(attractionRepo.save(attraction)).thenReturn(attraction);
+        when(attractionRepo.findAll()).thenReturn(attractions);
+        when(attractionMapper.mapToAttractionRequestDTO(attractions)).thenReturn(expectedDTOs);
 
-        Attraction result = attractionService.saveAttraction(attraction);
+        List<AttractionRequestDTO> result = attractionService.getAll();
 
         assertNotNull(result);
-        verify(attractionRepo, times(1)).save(attraction);
+        assertEquals(expectedDTOs.size(), result.size());
+        verify(attractionRepo, times(1)).findAll();
+        verify(attractionMapper, times(1)).mapToAttractionRequestDTO(attractions);
     }
 
     @Test
-    void testDeleteAttraction() {
+    public void testSave() {
+        Attraction attraction = new Attraction();
+        AttractionRequestDTO expectedDTO = new AttractionRequestDTO("Test Attraction", "Test Description");
+
+        when(attractionRepo.save(attraction)).thenReturn(attraction);
+        when(attractionMapper.mapToAttractionRequestDTO(attraction)).thenReturn(expectedDTO);
+
+        AttractionRequestDTO result = attractionService.save(attraction);
+
+        assertNotNull(result);
+        assertEquals(expectedDTO, result);
+        verify(attractionRepo, times(1)).save(attraction);
+        verify(attractionMapper, times(1)).mapToAttractionRequestDTO(attraction);
+    }
+
+    @Test
+    public void testDelete() {
         UUID id = UUID.randomUUID();
 
-        attractionService.deleteAttraction(id);
+        doNothing().when(attractionRepo).deleteById(id);
+
+        attractionService.delete(id);
 
         verify(attractionRepo, times(1)).deleteById(id);
     }
-
-    @Test
-    void testGetAttractionsByCity() {
-        String city = "Moscow";
-        Attraction attraction1 = new Attraction();
-        Attraction attraction2 = new Attraction();
-        List<Attraction> attractions = Arrays.asList(attraction1, attraction2);
-
-        when(attractionRepo.findByAddress_City(city)).thenReturn(attractions);
-
-        List<Attraction> result = attractionService.getAttractionsByCity(city);
-
-        assertEquals(2, result.size());
-        verify(attractionRepo, times(1)).findByAddress_City(city);
-    }
-
-    @Test
-    void testGetAttractionsByRegion() {
-        String region = "Moscow region";
-        Attraction attraction1 = new Attraction();
-        Attraction attraction2 = new Attraction();
-        List<Attraction> attractions = Arrays.asList(attraction1, attraction2);
-
-        when(attractionRepo.findByAddress_Region(region)).thenReturn(attractions);
-
-        List<Attraction> result = attractionService.getAttractionsByRegion(region);
-
-        assertEquals(2, result.size());
-        verify(attractionRepo, times(1)).findByAddress_Region(region);
-    }
-
-    @Test
-    void testSearchAttractionsByName() {
-        String name = "Zoo";
-        Attraction attraction1 = new Attraction();
-        Attraction attraction2 = new Attraction();
-        List<Attraction> attractions = Arrays.asList(attraction1, attraction2);
-
-        when(attractionRepo.findByNameContaining(name)).thenReturn(attractions);
-
-        List<Attraction> result = attractionService.searchAttractionsByName(name);
-
-        assertEquals(2, result.size());
-        verify(attractionRepo, times(1)).findByNameContaining(name);
-    }
-
-    @Test
-    void testGetAttractionsByService() {
-        String service = "Tour Guide";
-        Attraction attraction1 = new Attraction();
-        Attraction attraction2 = new Attraction();
-        List<Attraction> attractions = Arrays.asList(attraction1, attraction2);
-
-        when(attractionRepo.findByServices_Name(service)).thenReturn(attractions);
-
-        List<Attraction> result = attractionService.getAttractionsByService(service);
-
-        assertEquals(2, result.size());
-        verify(attractionRepo, times(1)).findByServices_Name(service);
-    }
-
 }

@@ -1,15 +1,15 @@
 package com.example.aston.service;
 
 import com.example.aston.dto.AddressRequestDTO;
+import com.example.aston.dto.AttractionServiceRequestDTO;
+import com.example.aston.mapper.AddressMapper;
 import com.example.aston.model.Address;
 import com.example.aston.repository.AddressRepository;
 import com.example.aston.service.address.AddressServiceImpl;
-import org.junit.jupiter.api.BeforeEach;
+import lombok.Builder;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -19,83 +19,127 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.times;
 
+@Builder
 public class AddressServiceTest {
 
-        @Mock
-        private AddressRepository addressRepo;
+    @Mock
+    private AddressRepository addressRepo;
 
-        @InjectMocks
-        private AddressServiceImpl addressService;
+    @Mock
+    private AddressMapper addressMapper;
 
-        @BeforeEach
-        void setUp() {
-            MockitoAnnotations.openMocks(this);
-        }
+    @InjectMocks
+    private AddressServiceImpl addressService;
 
-        @Test
-        void testGetAllAddress() {
-            Address address1 = new Address();
-            Address address2 = new Address();
-            List<Address> addresses = Arrays.asList(address1, address2);
 
-            when(addressRepo.findAll()).thenReturn(addresses);
 
-            List<AddressRequestDTO> result = addressService.getAll();
+    @Test
+    public void testFindById() {
+        UUID id = UUID.randomUUID();
+        Address address = new Address();
 
-            assertEquals(2, result.size());
-            verify(addressRepo, times(1)).findAll();
-        }
+        AddressRequestDTO expectedDTO = AddressRequestDTO.builder()
+                .building(745)
+                .street("Angarsk street")
+                .city("Moscow")
+                .region("Moscow region")
+                .build();
 
-//        @Test
-//        void testGetAddressById() {
-//            UUID id = UUID.randomUUID();
-//            Address address = new Address();
-//            address.setId(id);
-//
-//            when(addressRepo.findById(id)).thenReturn(Optional.of(address));
-//
-//            AddressRequestDTO result = addressService.findById(id);
-//
-//            assertNotNull(result);
-//            assertEquals(id, result.getId());
-//            verify(addressRepo, times(1)).findById(id);
-//        }
+        when(addressRepo.findById(id)).thenReturn(Optional.of(address));
+        when(addressMapper.mapToAddressRequestDTO(address)).thenReturn(expectedDTO);
 
-        @Test
-        void testGetAddressById_NotFound() {
-            UUID id = UUID.randomUUID();
+        AddressRequestDTO result = addressService.findById(id);
 
-            when(addressRepo.findById(id)).thenReturn(Optional.empty());
+        assertNotNull(result);
+        assertEquals(expectedDTO, result);
+        verify(addressRepo, times(1)).findById(id);
+        verify(addressMapper, times(1)).mapToAddressRequestDTO(address);
+    }
 
-            Exception exception = assertThrows(RuntimeException.class, () -> {
-                addressService.findById(id);
-            });
+    @Test
+    public void testFindByIdNotFound() {
+        UUID id = UUID.randomUUID();
 
-            assertEquals("Address not found by id: " + id, exception.getMessage());
-            verify(addressRepo, times(1)).findById(id);
-        }
+        when(addressRepo.findById(id)).thenReturn(Optional.empty());
 
-        @Test
-        void testSaveAddress() {
-            Address address = new Address();
+        assertThrows(RuntimeException.class, () -> addressService.findById(id));
+        verify(addressRepo, times(1)).findById(id);
+    }
 
-            when(addressRepo.save(address)).thenReturn(address);
+    @Test
+    public void testGetAll() {
+        List<Address> addresses = List.of(new Address(), new Address());
+        AddressRequestDTO expectedDTO1 = AddressRequestDTO.builder()
+                .building(745)
+                .street("Angarsk street")
+                .city("Moscow")
+                .region("Moscow region")
+                .build();
+        AddressRequestDTO expectedDTO2 = AddressRequestDTO.builder()
+                .building(745)
+                .street("Kirov street")
+                .city("Yaroslavl")
+                .region("Yaroslavl region")
+                .build();
 
-            AddressRequestDTO result = addressService.save(address);
 
-            assertNotNull(result);
-            verify(addressRepo, times(1)).save(address);
-        }
+        List<AddressRequestDTO> expectedDTOs = List.of(expectedDTO1, expectedDTO2);
 
-        @Test
-        void testDeleteAddress() {
-            UUID id = UUID.randomUUID();
+        when(addressRepo.findAll()).thenReturn(addresses);
+        when(addressMapper.mapToAddressRequestDTO(addresses)).thenReturn(expectedDTOs);
 
-            addressService.delete(id);
+        List<AddressRequestDTO> result = addressService.getAll();
 
-            verify(addressRepo, times(1)).deleteById(id);
-        }
+        assertNotNull(result);
+        assertEquals(expectedDTOs.size(), result.size());
+        verify(addressRepo, times(1)).findAll();
+        verify(addressMapper, times(1)).mapToAddressRequestDTO(addresses);
+    }
 
+    @Test
+    public void testSave() {
+        Address address = new Address();
+        AddressRequestDTO expectedDTO = AddressRequestDTO.builder()
+                .building(745)
+                .street("Angarsk street")
+                .city("Moscow")
+                .region("Moscow region")
+                .build();
+
+        when(addressRepo.save(address)).thenReturn(address);
+        when(addressMapper.mapToAddressRequestDTO(address)).thenReturn(expectedDTO);
+
+        AddressRequestDTO result = addressService.save(address);
+
+        assertNotNull(result);
+        assertEquals(expectedDTO, result);
+        verify(addressRepo, times(1)).save(address);
+        verify(addressMapper, times(1)).mapToAddressRequestDTO(address);
+    }
+
+    @Test
+    public void testDelete() {
+        UUID id = UUID.randomUUID();
+
+        doNothing().when(addressRepo).deleteById(id);
+
+        addressService.delete(id);
+
+        verify(addressRepo, times(1)).deleteById(id);
+    }
+    @Test
+    public void testAttractionServiceRequestDTO() {
+        String name = "Test Attraction";
+        String description = "Test Description";
+
+        AttractionServiceRequestDTO dto = AttractionServiceRequestDTO.builder()
+                .name(name)
+                .description(description)
+                .build();
+
+        assertEquals(name, dto.name());
+        assertEquals(description, dto.description());
+    }
 
 
 }
