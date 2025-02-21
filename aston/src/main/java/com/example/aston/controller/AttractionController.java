@@ -57,4 +57,8 @@ public class AttractionController {
     public List<Attraction> searchAttractionsByName(@RequestParam String name) {
         return attractionService.searchAttractionsByName(name);
     }
+    @GetMapping("/service/{name}")
+    public List<Attraction> getAttractionsByService(@PathVariable String name) {
+        return attractionService.getAttractionsByService(name);
+    }
 }

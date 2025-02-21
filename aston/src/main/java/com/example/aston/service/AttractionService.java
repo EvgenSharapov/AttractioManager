@@ -33,6 +33,8 @@ public class AttractionService {
         attractionRepo.deleteById(id);
     }
 
+
+
     public List<Attraction> getAttractionsByCity(String city) {
         return attractionRepo.findByAddress_City(city);
     }
@@ -45,7 +47,7 @@ public class AttractionService {
         return attractionRepo.findByNameContaining(name);
     }
 
-    public List<Attraction>  getAttractionByService(String service){
+    public List<Attraction>  getAttractionsByService(String service){
         return attractionRepo.findByServices_Name(service);
     }
 }

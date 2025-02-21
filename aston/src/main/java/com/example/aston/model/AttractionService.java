@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 
-import java.math.BigDecimal;
+import java.util.Set;
 import java.util.UUID;
 
 
@@ -14,17 +14,19 @@ import java.util.UUID;
 @Getter
 @Setter
 @NoArgsConstructor
-public class TicketInfo {
+public class AttractionService {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "service_id")
     private UUID id;
-    private BigDecimal price;
-    private String currency;
-    private Boolean availability;
+    private String name;
+    private String description;
 
-    @OneToOne
-    @JoinColumn(name = "attraction_id")
-    private Attraction attraction;
+    @Enumerated(EnumType.STRING)
+    private ServiceType serviceType;
+
+    @ManyToMany(mappedBy = "services")
+    private Set<Attraction> attractions;
 
 
 }

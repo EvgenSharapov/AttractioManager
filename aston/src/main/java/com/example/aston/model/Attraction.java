@@ -1,6 +1,9 @@
 package com.example.aston.model;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
 import java.util.Set;
@@ -8,6 +11,9 @@ import java.util.UUID;
 
 
 @Entity
+@Getter
+@Setter
+@NoArgsConstructor
 public class Attraction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,72 +38,10 @@ public class Attraction {
             name = "attraction_service",
             joinColumns = @JoinColumn(name = "attraction_id",referencedColumnName = "attraction_id"),
             inverseJoinColumns = @JoinColumn(name = "service_id",referencedColumnName = "service_id"))
-    private Set<Service> services;
+    private Set<AttractionService> services;
 
     @OneToOne(mappedBy = "attraction")
     private TicketInfo ticketInfo;
 
-    public UUID getId() {
-        return id;
-    }
 
-    public void setId(UUID id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public AttractionType getAttractionType() {
-        return attractionType;
-    }
-
-    public void setAttractionType(AttractionType attractionType) {
-        this.attractionType = attractionType;
-    }
-
-    public Address getAddress() {
-        return address;
-    }
-
-    public void setAddress(Address address) {
-        this.address = address;
-    }
-
-    public Set<Service> getServices() {
-        return services;
-    }
-
-    public void setServices(Set<Service> services) {
-        this.services = services;
-    }
-
-    public TicketInfo getTicketInfo() {
-        return ticketInfo;
-    }
-
-    public void setTicketInfo(TicketInfo ticketInfo) {
-        this.ticketInfo = ticketInfo;
-    }
-
-//    public UUID getAddressId() {
-//        return addressId;
-//    }
-//
-//    public void setAddressId(UUID addressId) {
-//        this.addressId = addressId;
-//    }
 }
