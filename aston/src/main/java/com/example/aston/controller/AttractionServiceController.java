@@ -1,7 +1,7 @@
 package com.example.aston.controller;
 
 import com.example.aston.model.AttractionService;
-import com.example.aston.service.AttractionServiceService;
+import com.example.aston.service.service.AttractionServiceServiceImpl;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -10,9 +10,9 @@ import java.util.UUID;
 @RequestMapping("/services")
 public class AttractionServiceController {
 
-    private final AttractionServiceService attServService;
+    private final AttractionServiceServiceImpl attServService;
 
-    public AttractionServiceController(AttractionServiceService service) {
+    public AttractionServiceController(AttractionServiceServiceImpl service) {
         this.attServService = service;
     }
 

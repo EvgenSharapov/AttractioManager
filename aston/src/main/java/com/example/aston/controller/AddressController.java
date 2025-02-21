@@ -1,7 +1,8 @@
 package com.example.aston.controller;
 
+import com.example.aston.dto.AddressRequestDTO;
 import com.example.aston.model.Address;
-import com.example.aston.service.AddressService;
+import com.example.aston.service.address.AddressServiceImpl;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -12,37 +13,37 @@ import java.util.UUID;
 @RequestMapping("/address")
 public class AddressController {
 
-        private final AddressService addressService;
+        private final AddressServiceImpl addressService;
 
-    public AddressController(AddressService addressService) {
+    public AddressController(AddressServiceImpl addressService) {
         this.addressService = addressService;
     }
 
 
     @GetMapping
-        public List<Address> getAllAddresses() {
-            return addressService.getAllAddresses();
+        public List<AddressRequestDTO> getAllAddresses() {
+            return addressService.getAll();
         }
 
         @GetMapping("/{id}")
-        public Address getAddressById(@PathVariable UUID id) {
-            return addressService.getAddressById(id);
+        public AddressRequestDTO getAddressById(@PathVariable UUID id) {
+            return addressService.findById(id);
         }
 
         @PostMapping
-        public Address createAddress(@RequestBody Address address) {
-            return addressService.saveAddress(address);
+        public AddressRequestDTO createAddress(@RequestBody Address address) {
+            return addressService.save(address);
         }
 
         @PutMapping("/{id}")
-        public Address updateAddress(@PathVariable UUID id, @RequestBody Address address) {
+        public AddressRequestDTO updateAddress(@PathVariable UUID id, @RequestBody Address address) {
             address.setId(id);
-            return addressService.saveAddress(address);
+            return addressService.save(address);
         }
 
         @DeleteMapping("/{id}")
         public void deleteAddress(@PathVariable UUID id) {
-            addressService.deleteAddress(id);
+            addressService.delete(id);
         }
 
     }

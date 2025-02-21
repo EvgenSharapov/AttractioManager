@@ -2,6 +2,7 @@ package com.example.aston.service;
 
 import com.example.aston.model.Attraction;
 import com.example.aston.repository.AttractionRepository;
+import com.example.aston.service.attraction.AttractionServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -22,7 +23,7 @@ class AttractionServiceTest {
     private AttractionRepository attractionRepo;
 
     @InjectMocks
-    private AttractionService attractionService;
+    private AttractionServiceImpl attractionService;
 
     @BeforeEach
     void setUp() {
