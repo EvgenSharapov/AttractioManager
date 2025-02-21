@@ -20,7 +20,7 @@ public class AttractionService {
         return attractionRepo.findAll();
     }
 
-    public Attraction getAttractionById(Long id) {
+    public Attraction getAttractionById(UUID id) {
         return attractionRepo.findById(id).orElseThrow(
                 ()->new RuntimeException("Attraction not found by id: "+id));
     }
@@ -29,7 +29,7 @@ public class AttractionService {
         return attractionRepo.save(attraction);
     }
 
-    public void deleteAttraction(Long id) {
+    public void deleteAttraction(UUID id) {
         attractionRepo.deleteById(id);
     }
 
@@ -43,5 +43,9 @@ public class AttractionService {
 
     public List<Attraction> searchAttractionsByName(String name) {
         return attractionRepo.findByNameContaining(name);
+    }
+
+    public List<Attraction>  getAttractionByService(String service){
+        return attractionRepo.findByServices_Name(service);
     }
 }

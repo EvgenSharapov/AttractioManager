@@ -8,7 +8,9 @@
 <body>
 <div class="container my-4">
   <h1 class="text-center" th:text="${attraction.id} ? 'Edit Attraction' : 'Add Attraction'"></h1>
-  <form th:action="@{${attraction.id} ? '/attractions/edit/{id}(id=${attraction.id})' : '/attractions/add'}" th:object="${attraction}" method="post">
+
+<!--  th:action="@{${attraction.id} ? '/attractions/edit/{id}(id=${attraction.id})' : '/attractions/add'}"-->
+  <form  th:object="${attraction}" method="post">
     <div class="form-group">
       <label for="name">Name</label>
       <input type="text" class="form-control" id="name" th:field="*{name}" required>
@@ -17,12 +19,12 @@
       <label for="description">Description</label>
       <textarea class="form-control" id="description" th:field="*{description}" required></textarea>
     </div>
-    <div class="form-group">
-      <label for="attractionType">Type</label>
-      <select class="form-control" id="attractionType" th:field="*{attractionType}" required>
-        <option th:each="type : ${T(com.example.model.AttractionType).values()}" th:value="${type}" th:text="${type}"></option>
-      </select>
-    </div>
+<!--    <div class="form-group">-->
+<!--      <label for="attractionType">Type</label>-->
+<!--      <select class="form-control" id="attractionType" th:field="*{attractionType}" required>-->
+<!--        <option th:each="type : ${T(com.example.model.AttractionType).values()}" th:value="${type}" th:text="${type}"></option>-->
+<!--      </select>-->
+<!--    </div>-->
     <div class="form-group">
       <label for="address">Address</label>
       <select class="form-control" id="address" th:field="*{address}" required>

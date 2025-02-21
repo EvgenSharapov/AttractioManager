@@ -10,7 +10,8 @@ import java.util.UUID;
 public class Address {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "address_id")
+    private UUID id;
     private Integer building;
     private String street;
     private String city;
@@ -18,14 +19,15 @@ public class Address {
     private Double longitude;
     private Double latitude;
 
+
     @OneToMany(mappedBy = "address")
     private List<Attraction> attractions;
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

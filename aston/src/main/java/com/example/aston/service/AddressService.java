@@ -9,13 +9,16 @@ import java.util.List;
 @Service
 public class AddressService {
 
-    private final AddressRepository addressRepository;
+    private final AddressRepository addressRepo;
 
     public AddressService(AddressRepository addressRepository) {
-        this.addressRepository = addressRepository;
+        this.addressRepo = addressRepository;
     }
 
     public List<Address> getAllAddresses() {
-        return addressRepository.findAll();
+        return addressRepo.findAll();
     }
+
+
+
 }

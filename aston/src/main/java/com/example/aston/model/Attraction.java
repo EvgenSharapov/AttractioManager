@@ -11,12 +11,17 @@ import java.util.UUID;
 public class Attraction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "attraction_id")
+    private UUID id;
     private String name;
     private String description;
 
-//    @Enumerated(EnumType.STRING)
-//    private AttractionType attractionType;
+//    @OneToOne(mappedBy = "address_id")
+//    @Column(name = "attraction_id")
+//    private UUID addressId;
+
+    @Enumerated(EnumType.STRING)
+    private AttractionType attractionType;
 
     @ManyToOne
     @JoinColumn(name = "address_id")
@@ -25,18 +30,18 @@ public class Attraction {
     @ManyToMany
     @JoinTable(
             name = "attraction_service",
-            joinColumns = @JoinColumn(name = "attraction_id"),
-            inverseJoinColumns = @JoinColumn(name = "service_id"))
+            joinColumns = @JoinColumn(name = "attraction_id",referencedColumnName = "attraction_id"),
+            inverseJoinColumns = @JoinColumn(name = "service_id",referencedColumnName = "service_id"))
     private Set<Service> services;
 
     @OneToOne(mappedBy = "attraction")
     private TicketInfo ticketInfo;
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -56,13 +61,13 @@ public class Attraction {
         this.description = description;
     }
 
-//    public AttractionType getAttractionType() {
-//        return attractionType;
-//    }
+    public AttractionType getAttractionType() {
+        return attractionType;
+    }
 
-//    public void setAttractionType(AttractionType attractionType) {
-//        this.attractionType = attractionType;
-//    }
+    public void setAttractionType(AttractionType attractionType) {
+        this.attractionType = attractionType;
+    }
 
     public Address getAddress() {
         return address;
@@ -87,4 +92,12 @@ public class Attraction {
     public void setTicketInfo(TicketInfo ticketInfo) {
         this.ticketInfo = ticketInfo;
     }
+
+//    public UUID getAddressId() {
+//        return addressId;
+//    }
+//
+//    public void setAddressId(UUID addressId) {
+//        this.addressId = addressId;
+//    }
 }

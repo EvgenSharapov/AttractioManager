@@ -11,7 +11,7 @@ import java.util.UUID;
 public class TicketInfo {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private UUID id;
     private BigDecimal price;
     private String currency;
     private Boolean availability;
@@ -20,11 +20,11 @@ public class TicketInfo {
     @JoinColumn(name = "attraction_id")
     private Attraction attraction;
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 

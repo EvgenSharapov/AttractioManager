@@ -7,5 +7,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.UUID;
 
 
-public interface TicketInfoRepository extends JpaRepository<TicketInfo, Long> {
+public interface TicketInfoRepository extends JpaRepository<TicketInfo, UUID> {
 }

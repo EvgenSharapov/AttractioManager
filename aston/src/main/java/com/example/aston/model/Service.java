@@ -11,21 +11,22 @@ import java.util.UUID;
 public class Service {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "service_id")
+    private UUID id;
     private String name;
     private String description;
 
-//    @Enumerated(EnumType.STRING)
-//    private ServiceType serviceType;
+    @Enumerated(EnumType.STRING)
+    private ServiceType serviceType;
 
     @ManyToMany(mappedBy = "services")
     private Set<Attraction> attractions;
 
-    public Long getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(Long id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
@@ -45,13 +46,13 @@ public class Service {
         this.description = description;
     }
 
-//    public ServiceType getServiceType() {
-//        return serviceType;
-//    }
+    public ServiceType getServiceType() {
+        return serviceType;
+    }
 
-//    public void setServiceType(ServiceType serviceType) {
-//        this.serviceType = serviceType;
-//    }
+    public void setServiceType(ServiceType serviceType) {
+        this.serviceType = serviceType;
+    }
 
     public Set<Attraction> getAttractions() {
         return attractions;

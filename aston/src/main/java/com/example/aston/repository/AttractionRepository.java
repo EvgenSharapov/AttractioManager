@@ -7,8 +7,9 @@ import java.util.List;
 import java.util.UUID;
 
 
-public interface AttractionRepository extends JpaRepository<Attraction, Long> {
+public interface AttractionRepository extends JpaRepository<Attraction, UUID> {
     List<Attraction> findByAddress_City(String city);
     List<Attraction> findByAddress_Region(String region);
+    List<Attraction> findByServices_Name(String name);
     List<Attraction> findByNameContaining(String name);
 }

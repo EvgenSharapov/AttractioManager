@@ -1,0 +1,62 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <changeSet id="1" author="yourname">
+        <createTable tableName="address">
+            <column name="id" type="UUID" defaultValueComputed="gen_random_uuid()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="building" type="INTEGER"/>
+            <column name="street" type="VARCHAR(255)"/>
+            <column name="city" type="VARCHAR(255)"/>
+            <column name="region" type="VARCHAR(255)"/>
+            <column name="longitude" type="DOUBLE"/>
+            <column name="latitude" type="DOUBLE"/>
+        </createTable>
+
+        <createTable tableName="attraction">
+            <column name="id" type="UUID" defaultValueComputed="gen_random_uuid()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="description" type="TEXT"/>
+            <column name="attraction_type" type="VARCHAR(50)"/>
+            <column name="address_id" type="UUID">
+                <constraints foreignKeyName="fk_attraction_address" referencedTableName="address" referencedColumnNames="id"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="service">
+            <column name="id" type="UUID" defaultValueComputed="gen_random_uuid()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="description" type="TEXT"/>
+            <column name="service_type" type="VARCHAR(50)"/>
+        </createTable>
+
+        <createTable tableName="attraction_service">
+            <column name="attraction_id" type="UUID">
+                <constraints foreignKeyName="fk_attraction_service_attraction" referencedTableName="attraction" referencedColumnNames="id"/>
+            </column>
+            <column name="service_id" type="UUID">
+                <constraints foreignKeyName="fk_attraction_service_service" referencedTableName="service" referencedColumnNames="id"/>
+            </column>
+        </createTable>
+
+        <createTable tableName="ticket_info">
+            <column name="id" type="UUID" defaultValueComputed="gen_random_uuid()">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="price" type="DECIMAL(10, 2)"/>
+            <column name="currency" type="VARCHAR(10)"/>
+            <column name="availability" type="BOOLEAN"/>
+            <column name="attraction_id" type="UUID">
+                <constraints foreignKeyName="fk_ticket_info_attraction" referencedTableName="attraction" referencedColumnNames="id" unique="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+</databaseChangeLog>
