@@ -16,6 +16,7 @@ public class AttractionServiceMapper {
         return AttractionServiceRequestDTO.builder()
                 .name(service.getName())
                 .description(service.getDescription())
+                .type(service.getServiceType())
                 .build();
     }
     public List<AttractionServiceRequestDTO> mapToAttractionServiceRequestDTO(List<AttractionService> services) {

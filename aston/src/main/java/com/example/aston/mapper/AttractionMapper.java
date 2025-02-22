@@ -1,9 +1,6 @@
 package com.example.aston.mapper;
 
-
-import com.example.aston.dto.AddressRequestDTO;
 import com.example.aston.dto.AttractionRequestDTO;
-import com.example.aston.model.Address;
 import com.example.aston.model.Attraction;
 import org.springframework.stereotype.Component;
 
@@ -17,6 +14,7 @@ public class AttractionMapper {
         return AttractionRequestDTO.builder()
                 .name(attraction.getName())
                 .description(attraction.getDescription())
+                .type(attraction.getAttractionType())
                 .build();
     }
 
