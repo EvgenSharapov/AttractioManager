@@ -1,7 +1,11 @@
 package com.example.aston.service;
 
+import com.example.aston.dto.AttractionServiceRequestDTO;
+import com.example.aston.mapper.AttractionServiceMapper;
 import com.example.aston.model.AttractionService;
+import com.example.aston.model.ServiceType;
 import com.example.aston.repository.AttractionServiceRepository;
+import com.example.aston.service.attraction.AttractionServiceImpl;
 import com.example.aston.service.service.AttractionServiceServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -9,90 +13,94 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.times;
 
-
-public class AttractionServiceServiceTest {
+class AttractionServiceServiceTest {
 
     @Mock
     private AttractionServiceRepository serviceRepo;
 
+    @Mock
+    private AttractionServiceMapper serviceMapper;
+
     @InjectMocks
-    private AttractionServiceServiceImpl attServService;
+    private AttractionServiceServiceImpl attractionService;
+
+    private AttractionService attractionServiceEntity;
+    private AttractionServiceRequestDTO attractionServiceRequestDTO;
+    private UUID uuid;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
+
+        uuid = UUID.randomUUID();
+        attractionServiceEntity = new AttractionService();
+        attractionServiceRequestDTO = new AttractionServiceRequestDTO("Test name","Test Description", ServiceType.RENTAL_SERVICE);
+
+        when(serviceMapper.mapToAttractionServiceRequestDTO(attractionServiceEntity)).thenReturn(attractionServiceRequestDTO);
     }
 
     @Test
-    void testGetAllAttractionService() {
-        AttractionService attrService1 = new AttractionService();
-        AttractionService attrService2 = new AttractionService();
-        List<AttractionService> services = Arrays.asList(attrService1, attrService2);
+    void findById_ShouldReturnAttractionServiceRequestDTO_WhenServiceExists() {
+        when(serviceRepo.findById(uuid)).thenReturn(Optional.of(attractionServiceEntity));
 
+        AttractionServiceRequestDTO result = attractionService.findById(uuid);
+
+        assertNotNull(result);
+        assertEquals(attractionServiceRequestDTO, result);
+        verify(serviceRepo, times(1)).findById(uuid);
+    }
+
+    @Test
+    void findById_ShouldThrowRuntimeException_WhenServiceDoesNotExist() {
+        when(serviceRepo.findById(uuid)).thenReturn(Optional.empty());
+
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> {
+            attractionService.findById(uuid);
+        });
+
+        assertEquals("Attraction Service not found by id: " + uuid, exception.getMessage());
+        verify(serviceRepo, times(1)).findById(uuid);
+    }
+
+    @Test
+    void getAll_ShouldReturnListOfAttractionServiceRequestDTO_WhenServicesExist() {
+        List<AttractionService> services = Collections.singletonList(attractionServiceEntity);
         when(serviceRepo.findAll()).thenReturn(services);
+        when(serviceMapper.mapToAttractionServiceRequestDTO(services)).thenReturn(Collections.singletonList(attractionServiceRequestDTO));
 
-        List<AttractionService> result = attServService.getAllAttractionService();
+        List<AttractionServiceRequestDTO> result = attractionService.getAll();
 
-        assertEquals(2, result.size());
+        assertNotNull(result);
+        assertEquals(1, result.size());
+        assertEquals(attractionServiceRequestDTO, result.get(0));
         verify(serviceRepo, times(1)).findAll();
     }
 
     @Test
-    void testGetAttractionServiceById() {
-        UUID id = UUID.randomUUID();
-        AttractionService attrService = new AttractionService();
-        attrService.setId(id);
+    void save_ShouldReturnAttractionServiceRequestDTO_WhenServiceIsSaved() {
+        when(serviceRepo.save(attractionServiceEntity)).thenReturn(attractionServiceEntity);
 
-        when(serviceRepo.findById(id)).thenReturn(Optional.of(attrService));
-
-        AttractionService result = attServService.getAttractionServiceById(id);
+        AttractionServiceRequestDTO result = attractionService.save(attractionServiceEntity);
 
         assertNotNull(result);
-        assertEquals(id, result.getId());
-        verify(serviceRepo, times(1)).findById(id);
+        assertEquals(attractionServiceRequestDTO, result);
+        verify(serviceRepo, times(1)).save(attractionServiceEntity);
     }
 
     @Test
-    void testGetAttractionServiceById_NotFound() {
-        UUID id = UUID.randomUUID();
+    void delete_ShouldDeleteService_WhenServiceExists() {
+        doNothing().when(serviceRepo).deleteById(uuid);
 
-        when(serviceRepo.findById(id)).thenReturn(Optional.empty());
+        attractionService.delete(uuid);
 
-        Exception exception = assertThrows(RuntimeException.class, () -> {
-            attServService.getAttractionServiceById(id);
-        });
-
-        assertEquals("Attraction service not found by id: " + id, exception.getMessage());
-        verify(serviceRepo, times(1)).findById(id);
-    }
-
-    @Test
-    void testSaveAttractionService() {
-        AttractionService attrService = new AttractionService();
-
-        when(serviceRepo.save(attrService)).thenReturn(attrService);
-
-        AttractionService result = attServService.saveAttractionService(attrService);
-
-        assertNotNull(result);
-        verify(serviceRepo, times(1)).save(attrService);
-    }
-
-    @Test
-    void testDeleteAddress() {
-        UUID id = UUID.randomUUID();
-
-        attServService.deleteAttractionService(id);
-
-        verify(serviceRepo, times(1)).deleteById(id);
+        verify(serviceRepo, times(1)).deleteById(uuid);
     }
 }

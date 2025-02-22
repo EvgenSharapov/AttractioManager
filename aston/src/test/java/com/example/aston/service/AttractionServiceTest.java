@@ -3,6 +3,7 @@ package com.example.aston.service;
 import com.example.aston.dto.AttractionRequestDTO;
 import com.example.aston.mapper.AttractionMapper;
 import com.example.aston.model.Attraction;
+import com.example.aston.model.AttractionType;
 import com.example.aston.repository.AttractionRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -34,7 +35,7 @@ public class AttractionServiceTest {
     public void testFindById() {
         UUID id = UUID.randomUUID();
         Attraction attraction = new Attraction();
-        AttractionRequestDTO expectedDTO = new AttractionRequestDTO("Test Attraction", "Test Description");
+        AttractionRequestDTO expectedDTO = new AttractionRequestDTO("Test Attraction", "Test Description", AttractionType.PARK);
 
         when(attractionRepo.findById(id)).thenReturn(Optional.of(attraction));
         when(attractionMapper.mapToAttractionRequestDTO(attraction)).thenReturn(expectedDTO);
@@ -61,8 +62,8 @@ public class AttractionServiceTest {
     public void testGetAll() {
         List<Attraction> attractions = List.of(new Attraction(), new Attraction());
         List<AttractionRequestDTO> expectedDTOs = List.of(
-                new AttractionRequestDTO("Attraction 1", "Description 1"),
-                new AttractionRequestDTO("Attraction 2", "Description 2")
+                new AttractionRequestDTO("Attraction 1", "Description 1",AttractionType.PARK),
+                new AttractionRequestDTO("Attraction 2", "Description 2",AttractionType.GALLERY)
         );
 
         when(attractionRepo.findAll()).thenReturn(attractions);
@@ -79,7 +80,7 @@ public class AttractionServiceTest {
     @Test
     public void testSave() {
         Attraction attraction = new Attraction();
-        AttractionRequestDTO expectedDTO = new AttractionRequestDTO("Test Attraction", "Test Description");
+        AttractionRequestDTO expectedDTO = new AttractionRequestDTO("Test Attraction", "Test Description",AttractionType.PARK);
 
         when(attractionRepo.save(attraction)).thenReturn(attraction);
         when(attractionMapper.mapToAttractionRequestDTO(attraction)).thenReturn(expectedDTO);
