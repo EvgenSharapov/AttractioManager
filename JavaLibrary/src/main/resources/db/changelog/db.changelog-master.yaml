@@ -1,0 +1,35 @@
+databaseChangeLog:
+  - logicalFilePath: db/changelog/db.changelog-master.yaml
+  - changeSet:
+      id: 1
+      author: evgeny_sharapov
+      changes:
+        - createTable:
+            tableName: topic_library
+            columns:
+              - column:
+                  name: topic_library_id
+                  type: UUID
+                  remarks: "topic_library topic_library_id"
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+
+              - column:
+                  name: theme
+                  type: varchar(50)
+                  remarks: "topic_library theme"
+                  constraints:
+                    nullable: true
+              - column:
+                  name: content
+                  type: TEXT
+                  remarks: "topic_library content"
+                  constraints:
+                    nullable: true
+              - column:
+                  name: topic_area
+                  type: varchar(50)
+                  remarks: "topic_library topic_area"
+                  constraints:
+                    nullable: true
